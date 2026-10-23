@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Session Login Test</title>
+  <style>
+    body { font: 16px system-ui, sans-serif; max-width: 36rem; margin: 3rem auto; padding: 0 1rem; }
+    input, button { font: inherit; padding: .55rem .7rem; }
+    input { width: 15rem; }
+    #status { margin-top: 1rem; }
+  </style>
+</head>
+<body>
+  <h1>Session Login Test</h1>
+  <label for="username">Username</label>
+  <input id="username" type="text" autocomplete="username" placeholder="z. B. max">
+  <button id="login">Anmelden</button>
+  <button id="logout" disabled>Abmelden</button>
+  <p id="status">Nicht angemeldet</p>
+
+  <script>
+    const usernameInput = document.getElementById('username');
+    const loginButton = document.getElementById('login');
+    const logoutButton = document.getElementById('logout');
+    const status = document.getElementById('status');
+    let socket = null;
+
+    loginButton.addEventListener('click', () => {
+      const username = usernameInput.value.trim();
+      if (!username) {
+        status.textContent = 'Bitte einen Usernamen eingeben.';
+        usernameInput.focus();
+        return;
+      }
+      if (socket && socket.readyState < WebSocket.CLOSING) return;
+
+      const wsScheme = location.protocol === 'https:' ? 'wss:' : 'ws:';
+      const wsUrl = `${wsScheme}//${location.host}/ws/${encodeURIComponent(username)}`;
+      const newSocket = new WebSocket(wsUrl);
+      socket = newSocket;
+      status.textContent = `Verbinde als ${username} …`;
+      loginButton.disabled = true;
+
+      newSocket.addEventListener('open', () => {
+        status.textContent = `Angemeldet als ${username}`;
+        usernameInput.disabled = true;
+        logoutButton.disabled = false;
+      });
+      newSocket.addEventListener('message', event => {
+        // Der Server kann Nachrichten im Format {messageid, modul, command, payload} senden.
+        status.textContent = `Angemeldet als ${username} · Nachricht: ${event.data}`;
+      });
+      newSocket.addEventListener('error', () => {
+        status.textContent = 'WebSocket-Verbindung fehlgeschlagen.';
+      });
+      newSocket.addEventListener('close', () => {
+        if (socket === newSocket) socket = null;
+        status.textContent = `Abgemeldet (${username})`;
+        usernameInput.disabled = false;
+        loginButton.disabled = false;
+        logoutButton.disabled = true;
+      });
+    });
+
+    logoutButton.addEventListener('click', () => {
+      if (socket && socket.readyState < WebSocket.CLOSING) {
+        status.textContent = 'Melde ab …';
+        socket.close(1000, 'User logout');
+      }
+    });
+  </script>
+</body>
+</html>

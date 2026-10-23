@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Login Cookie Debug</title>
+  <style>
+    :root { color-scheme: light dark; font-family: system-ui, sans-serif; }
+    body { max-width: 680px; margin: 3rem auto; padding: 0 1rem; }
+    main { border: 1px solid #8886; border-radius: 12px; padding: 1.5rem; }
+    h1 { margin-top: 0; }
+    .status { padding: .8rem 1rem; border-radius: 8px; background: #8882; margin: 1rem 0; }
+    .actions { display: flex; flex-wrap: wrap; gap: .65rem; margin-top: 1rem; }
+    button { padding: .65rem 1rem; border: 0; border-radius: 7px; cursor: pointer; font: inherit; }
+    pre { white-space: pre-wrap; overflow-wrap: anywhere; background: #8882; padding: 1rem; border-radius: 8px; }
+    small { opacity: .8; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Login Cookie Debug</h1>
+    <p>Teste: ohne Cookie registrieren, Seite schließen und erneut öffnen, mit demselben Cookie einloggen oder das Cookie löschen.</p>
+    <div id="status" class="status">Noch nicht geprüft.</div>
+    <p id="cookie-view">Cookie-Status wird geprüft …</p>
+    <div class="actions">
+      <button id="init">Registrieren / einloggen</button>
+      <button id="refresh">Cookie-Status prüfen</button>
+      <button id="delete">Cookie löschen</button>
+    </div>
+    <h2>Antwort</h2>
+    <pre id="result">Noch keine Anfrage.</pre>
+    <small>Die Seite sendet Anfragen an <code>/init</code> und zum Löschen an <code>/debug/logout</code>.</small>
+  </main>
+  <script>
+    const statusEl = document.querySelector('#status');
+    const cookieView = document.querySelector('#cookie-view');
+    const resultEl = document.querySelector('#result');
+    function showCookieVisibility() {
+      const visible = document.cookie.split(';').some(part => part.trim().startsWith('user-token='));
+      cookieView.textContent = visible
+        ? 'user-token ist für JavaScript sichtbar.'
+        : 'user-token ist für JavaScript nicht sichtbar (bei HttpOnly normal). Der Server prüft das Cookie beim nächsten /init-Aufruf.';
+    }
+    async function call(path, options = {}) {
+      statusEl.textContent = `${options.method || 'GET'} ${path} …`;
+      try {
+        const response = await fetch(path, { credentials: 'same-origin', ...options });
+        const body = await response.text();
+        resultEl.textContent = `HTTP ${response.status}\n${body || '(leere Antwort)'}`;
+        statusEl.textContent = response.ok ? 'Anfrage erfolgreich.' : 'Anfrage fehlgeschlagen.';
+        console.log(response);
+        showCookieVisibility();
+        return response.ok;
+      } catch (error) {
+        statusEl.textContent = 'Verbindungsfehler.';
+        resultEl.textContent = String(error);
+        return false;
+      }
+    }
+    document.querySelector('#init').addEventListener('click', () => call('/init/login'));
+    document.querySelector('#refresh').addEventListener('click', showCookieVisibility);
+    document.querySelector('#delete').addEventListener('click', async () => {
+      // HttpOnly-Cookies kann JavaScript nicht löschen; dafür muss der Server ein abgelaufenes Set-Cookie senden.
+      await call('/init/logout', { method: 'POST' });
+    });
+    showCookieVisibility();
+  </script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+databaseChangeLog:
+  - include:
+      file: changes/001-create-user-and-session.yaml
+      relativeToChangelogFile: true
+  - include:
+      file: changes/002-create-world-hexagon.yaml
+      relativeToChangelogFile: true
+  - include:
+      file: changes/003-create-world-cluster.yaml
+      relativeToChangelogFile: true

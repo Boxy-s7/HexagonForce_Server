@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Aktive Sessions</title>
+  <style>
+    body { font: 15px system-ui, sans-serif; margin: 2rem auto; max-width: 1100px; padding: 0 1rem; color: #222; }
+    h1 { margin-bottom: .25rem; }
+    #status { color: #555; margin: 0 0 1.25rem; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { border-bottom: 1px solid #ddd; padding: .7rem; text-align: left; }
+    th { background: #f4f5f7; }
+    .active { color: #147a35; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <h1>Sessions</h1>
+  <p id="status">Verbinde …</p>
+  <table>
+    <thead>
+      <tr><th>User</th><th>Login</th><th>Logout</th><th>Session-ID</th></tr>
+    </thead>
+    <tbody id="sessions"></tbody>
+  </table>
+  <script>
+    const sessions = new Map();
+    const status = document.getElementById('status');
+    const tableBody = document.getElementById('sessions');
+    let retryTimer;
+
+    function displayTime(value) {
+      return value ? new Date(value).toLocaleString() : '—';
+    }
+
+    function upsert(session) {
+      if (!session || !session.id) return;
+      const previous = sessions.get(session.id);
+      sessions.set(session.id, {
+        ...previous,
+        ...session,
+        // A later snapshot must not undo a logout update received during reconnect.
+        logoutAt: session.logoutAt || previous?.logoutAt || null
+      });
+      render();
+    }
+
+    function render() {
+      const cutoff = Date.now() - 24 * 60 * 60 * 1000;
+      for (const [id, session] of sessions) {
+        if (new Date(session.loginAt).getTime() < cutoff) sessions.delete(id);
+      }
+
+      const rows = [...sessions.values()]
+        .sort((a, b) => new Date(b.loginAt) - new Date(a.loginAt))
+        .map(session => {
+          const row = document.createElement('tr');
+          const username = document.createElement('td');
+          username.textContent = session.username;
+          const login = document.createElement('td');
+          login.textContent = displayTime(session.loginAt);
+          const logout = document.createElement('td');
+          logout.textContent = session.logoutAt ? displayTime(session.logoutAt) : 'Aktiv';
+          if (!session.logoutAt) logout.className = 'active';
+          const id = document.createElement('td');
+          id.textContent = session.id;
+          row.append(username, login, logout, id);
+          return row;
+        });
+      tableBody.replaceChildren(...rows);
+    }
+
+    function connect() {
+      const scheme = location.protocol === 'https:' ? 'wss:' : 'ws:';
+      const socket = new WebSocket(`${scheme}//${location.host}/ws/dashboard/sessions`);
+
+      socket.onopen = () => { status.textContent = 'Live verbunden'; };
+      socket.onmessage = event => {
+        const message = JSON.parse(event.data);
+        if (message.modul !== 'session') return;
+        if (message.command === 'snapshot') {
+          message.payload.forEach(upsert);
+        } else if (message.command === 'login' || message.command === 'logout') {
+          upsert(message.payload);
+        }
+      };
+      socket.onerror = () => socket.close();
+      socket.onclose = () => {
+        status.textContent = 'Verbindung getrennt – erneuter Versuch …';
+        clearTimeout(retryTimer);
+        retryTimer = setTimeout(connect, 2000);
+      };
+    }
+
+    connect();
+  </script>
+</body>
+</html>
+

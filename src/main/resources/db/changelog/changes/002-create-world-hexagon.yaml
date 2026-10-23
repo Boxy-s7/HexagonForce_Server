@@ -1,0 +1,41 @@
+databaseChangeLog:
+  - changeSet:
+      id: 002-create-world-hexagon
+      author: hexagonforce
+      changes:
+        - createTable:
+            tableName: world_hexagon
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_world_hexagon
+                    nullable: false
+              - column:
+                  name: n_1
+                  type: UUID
+              - column:
+                  name: n_2
+                  type: UUID
+              - column:
+                  name: n_3
+                  type: UUID
+              - column:
+                  name: n_4
+                  type: UUID
+              - column:
+                  name: n_5
+                  type: UUID
+              - column:
+                  name: n_6
+                  type: UUID
+              - column:
+                  name: owner_id
+                  type: UUID
+              - column:
+                  name: state
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
