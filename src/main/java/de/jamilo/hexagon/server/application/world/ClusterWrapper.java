@@ -61,25 +61,6 @@ public class ClusterWrapper {
         switch (hex.getClusterRole()) {
             case o_0:
                 cluster.setOwner0(hex.getId());
-                break;
-            case s_0:
-                cluster.setSpecial0(hex.getId());
-                break;
-            case s_1:
-                cluster.setSpecial1(hex.getId());
-                break;
-            case s_2:
-                cluster.setSpecial2(hex.getId());
-                break;
-            case s_3:
-                cluster.setSpecial3(hex.getId());
-                break;
-            case s_4:
-                cluster.setSpecial4(hex.getId());
-                break;
-            case s_5:
-                cluster.setSpecial5(hex.getId());
-                break;
             case u_0:
                 cluster.setUnknown0(hex.getId());
                 break;
@@ -145,18 +126,6 @@ public UUID getHexagon(ClusterRole role) {
     switch (role) {
         case o_0:
             return cluster.getOwner0();
-        case s_0:
-            return cluster.getSpecial0();
-        case s_1:
-            return cluster.getSpecial1();
-        case s_2:
-            return cluster.getSpecial2();
-        case s_3:
-            return cluster.getSpecial3();
-        case s_4:
-            return cluster.getSpecial4();
-        case s_5:
-            return cluster.getSpecial5();
         case u_0:
             return cluster.getUnknown0();
         case u_1:

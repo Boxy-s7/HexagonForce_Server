@@ -95,24 +95,7 @@ public class ClusterEntity {
 
     @Column(name = "u_11")
     private UUID unknown11;
-
-    @Column(name = "s_0")
-    private UUID special0;
-
-    @Column(name = "s_1")
-    private UUID special1;
-
-    @Column(name = "s_2")
-    private UUID special2;
-
-    @Column(name = "s_3")
-    private UUID special3;
-
-    @Column(name = "s_4")
-    private UUID special4;
-
-    @Column(name = "s_5")
-    private UUID special5;
+    
 
 
     public void setId(UUID id) {
@@ -319,53 +302,7 @@ public class ClusterEntity {
         this.unknown11 = unknown11;
     }
 
-    public UUID getSpecial0() {
-        return special0;
-    }
-
-    public void setSpecial0(UUID special0) {
-        this.special0 = special0;
-    }
-
-    public UUID getSpecial1() {
-        return special1;
-    }
-
-    public void setSpecial1(UUID special1) {
-        this.special1 = special1;
-    }
-
-    public UUID getSpecial2() {
-        return special2;
-    }
-
-    public void setSpecial2(UUID special2) {
-        this.special2 = special2;
-    }
-
-    public UUID getSpecial3() {
-        return special3;
-    }
-
-    public void setSpecial3(UUID special3) {
-        this.special3 = special3;
-    }
-
-    public UUID getSpecial4() {
-        return special4;
-    }
-
-    public void setSpecial4(UUID special4) {
-        this.special4 = special4;
-    }
-
-    public UUID getSpecial5() {
-        return special5;
-    }
-
-    public void setSpecial5(UUID special5) {
-        this.special5 = special5;
-    }
+    
 
     public ClusterState getState() {
         return state;
