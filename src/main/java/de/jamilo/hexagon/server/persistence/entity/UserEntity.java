@@ -1,5 +1,7 @@
 package de.jamilo.hexagon.server.persistence.entity;
 
+import java.util.UUID;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -13,8 +15,8 @@ import jakarta.persistence.*;
 public class UserEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @Column(nullable = false, length = 100)
     private String username;
@@ -27,11 +29,16 @@ public class UserEntity {
         this.username = username;
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
     public String getUsername() {
         return username;
     }
+    public void setUsername(String username) {
+        this.username = username;
+    }
 }
+
+

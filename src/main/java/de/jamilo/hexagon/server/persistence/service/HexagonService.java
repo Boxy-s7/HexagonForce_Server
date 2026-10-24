@@ -1,27 +1,32 @@
 package de.jamilo.hexagon.server.persistence.service;
 
 import java.util.List;
+import java.util.UUID;
 
 import de.jamilo.hexagon.server.persistence.entity.HexagonEntity;
 import de.jamilo.hexagon.server.persistence.repository.HexagonRepository;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.inject.Singleton;
+import jakarta.transaction.Transactional;
 
-@Singleton 
-public class HexagonService {
+@ApplicationScoped
+public class HexagonService extends CrudService<HexagonEntity, UUID> {
+    private final HexagonRepository hexaRepo;
 
-    @Inject 
-    HexagonRepository hexaRepo;
-
-    public void createHexagon(HexagonEntity o_0) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'createHexagon'");
+    @Inject
+    public HexagonService(HexagonRepository hexaRepo) {
+        super(hexaRepo);
+        this.hexaRepo = hexaRepo;
     }
 
-    public void updateHexagons(List<HexagonEntity> hexas) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateHexagons'");
+    public void createHexagon(HexagonEntity hexagon) {
+        hexaRepo.create(hexagon);
     }
 
-
+    @Transactional
+    public void updateHexagons(List<HexagonEntity> hexagons) {
+        for (HexagonEntity hexagon : hexagons) {
+            hexaRepo.update(hexagon);
+        }
+    }
 }

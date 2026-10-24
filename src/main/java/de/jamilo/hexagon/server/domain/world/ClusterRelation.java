@@ -10,12 +10,12 @@ public class ClusterRelation {
         this.targetCluster = targetCluster;
     }
 
-    ClusterRole targetRole;
-    public ClusterRole getTargetRole() {
+    HexagonRole targetRole;
+    public HexagonRole getTargetRole() {
         return targetRole;
     }
 
-    public void setTargetRole(ClusterRole targetRole) {
+    public void setTargetRole(HexagonRole targetRole) {
         this.targetRole = targetRole;
     }
 
@@ -29,7 +29,7 @@ public class ClusterRelation {
         this.targetIndex = targetIndex;
     }
 
-    public ClusterRelation(int targetCluster, ClusterRole targetRole, int targetIndex) {
+    public ClusterRelation(int targetCluster, HexagonRole targetRole, int targetIndex) {
         this.targetCluster = targetCluster;
         this.targetRole = targetRole;
         this.targetIndex = targetIndex;

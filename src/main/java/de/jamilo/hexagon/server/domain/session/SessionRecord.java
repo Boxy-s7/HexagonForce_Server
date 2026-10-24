@@ -12,6 +12,6 @@ public record SessionRecord(
         String username,
         OffsetDateTime loginAt,
         OffsetDateTime logoutAt,
-        String lastEvent,
-        String lastCommand) {
+        int lastEvent,
+        int lastCommand) {
 }

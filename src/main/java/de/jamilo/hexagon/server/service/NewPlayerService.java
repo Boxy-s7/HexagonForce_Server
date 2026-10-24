@@ -84,40 +84,40 @@ public class NewPlayerService {
         HexagonEntity unknown = new HexagonEntity(HexagonState.UNKNOWN);
         hexes.add(unknown);
         
-        if (seat.getNeighbor6() == null && seat.getNeighbor1() == null  && seat.getNeighbor2() == null) {
-            unknown.setNeighbor4(seat.getId());
+        if (seat.getOutpost5() == null && seat.getOutpost0() == null  && seat.getOutpost1() == null) {
+            unknown.setOutpost3(seat.getHexId());
             hexaRepo.save(unknown);
-            seat.setNeighbor1(unknown.getId());
+            seat.setOutpost0(unknown.getHexId());
             return unknown;
         }
-        if (seat.getNeighbor1() == null && seat.getNeighbor2() == null  && seat.getNeighbor3() == null) {
-            unknown.setNeighbor5(seat.getId());
+        if (seat.getOutpost0() == null && seat.getOutpost1() == null  && seat.getOutpost2() == null) {
+            unknown.setOutpost4(seat.getHexId());
             hexaRepo.save(unknown);
-            seat.setNeighbor2(unknown.getId());
+            seat.setOutpost1(unknown.getHexId());
             return unknown;
         }
-        if (seat.getNeighbor2() == null && seat.getNeighbor3() == null  && seat.getNeighbor4() == null) {
-            unknown.setNeighbor6(seat.getId());
+        if (seat.getOutpost1() == null && seat.getOutpost2() == null  && seat.getOutpost3() == null) {
+            unknown.setOutpost5(seat.getHexId());
             hexaRepo.save(unknown);
-            seat.setNeighbor3(unknown.getId());
+            seat.setOutpost2(unknown.getHexId());
             return unknown;
         }
-        if (seat.getNeighbor3() == null && seat.getNeighbor4() == null  && seat.getNeighbor5() == null) {
-            unknown.setNeighbor1(seat.getId());
+        if (seat.getOutpost2() == null && seat.getOutpost3() == null  && seat.getOutpost4() == null) {
+            unknown.setOutpost0(seat.getHexId());
             hexaRepo.save(unknown);
-            seat.setNeighbor4(unknown.getId());
+            seat.setOutpost3(unknown.getHexId());
             return unknown;
         }
-        if (seat.getNeighbor4() == null && seat.getNeighbor5() == null  && seat.getNeighbor6() == null) {
-            unknown.setNeighbor2(seat.getId());
+        if (seat.getOutpost3() == null && seat.getOutpost4() == null  && seat.getOutpost5() == null) {
+            unknown.setOutpost1(seat.getHexId());
             hexaRepo.save(unknown);
-            seat.setNeighbor5(unknown.getId());
+            seat.setOutpost4(unknown.getHexId());
             return unknown;
         }
-        if (seat.getNeighbor5() == null && seat.getNeighbor6() == null  && seat.getNeighbor1() == null) {
-            unknown.setNeighbor3(seat.getId());
+        if (seat.getOutpost4() == null && seat.getOutpost5() == null  && seat.getOutpost0() == null) {
+            unknown.setOutpost2(seat.getHexId());
             hexaRepo.save(unknown);
-            seat.setNeighbor6(unknown.getId());
+            seat.setOutpost5(unknown.getHexId());
             return unknown;
         }
         return null;
@@ -126,23 +126,23 @@ public class NewPlayerService {
     private int addSeatSpawnpoint(List<HexagonEntity> hexes, HexagonEntity seat) {
         int spawnpoint = 0;
         
-        if (seat.getNeighbor6() == null && seat.getNeighbor1() == null  && seat.getNeighbor2() == null) {
+        if (seat.getOutpost5() == null && seat.getOutpost0() == null  && seat.getOutpost1() == null) {
             spawnpoint = 1;
         }
-        else if (seat.getNeighbor1() == null && seat.getNeighbor2() == null  && seat.getNeighbor3() == null) {
+        else if (seat.getOutpost0() == null && seat.getOutpost1() == null  && seat.getOutpost2() == null) {
             spawnpoint = 2;
         }
 
-        else if (seat.getNeighbor2() == null && seat.getNeighbor3() == null  && seat.getNeighbor4() == null) {
+        else if (seat.getOutpost1() == null && seat.getOutpost2() == null  && seat.getOutpost3() == null) {
             spawnpoint = 3;
         }
-        else if (seat.getNeighbor3() == null && seat.getNeighbor4() == null  && seat.getNeighbor5() == null) {
+        else if (seat.getOutpost2() == null && seat.getOutpost3() == null  && seat.getOutpost4() == null) {
             spawnpoint = 4;
         }
-        else if (seat.getNeighbor4() == null && seat.getNeighbor5() == null  && seat.getNeighbor6() == null) {
+        else if (seat.getOutpost3() == null && seat.getOutpost4() == null  && seat.getOutpost5() == null) {
             spawnpoint = 5;
         }
-        else if (seat.getNeighbor5() == null && seat.getNeighbor6() == null  && seat.getNeighbor1() == null) {
+        else if (seat.getOutpost4() == null && seat.getOutpost5() == null  && seat.getOutpost0() == null) {
             spawnpoint = 6;
         }
         seat.setSpawnpoint(spawnpoint);
@@ -152,23 +152,23 @@ public class NewPlayerService {
     private int addFirstUnknownSpawnpoint(List<HexagonEntity> hexes, HexagonEntity firstU) {
         int spawnpoint = 0;
         
-        if (firstU.getNeighbor6() != null) {
+        if (firstU.getOutpost5() != null) {
             spawnpoint = 1;
         }
-        else if (firstU.getNeighbor1() != null) {
+        else if (firstU.getOutpost0() != null) {
             spawnpoint = 2;
         }
 
-        else if (firstU.getNeighbor2() != null) {
+        else if (firstU.getOutpost1() != null) {
             spawnpoint = 3;
         }
-        else if (firstU.getNeighbor3() != null) {
+        else if (firstU.getOutpost2() != null) {
             spawnpoint = 4;
         }
-        else if (firstU.getNeighbor4() != null) {
+        else if (firstU.getOutpost3() != null) {
             spawnpoint = 5;
         }
-        else if (firstU.getNeighbor5() != null) {
+        else if (firstU.getOutpost4() != null) {
             spawnpoint = 6;
         }
         firstU.setSpawnpoint(spawnpoint);
@@ -178,23 +178,23 @@ public class NewPlayerService {
     private int addAnotherUnknownSpawnpoint(List<HexagonEntity> hexes, HexagonEntity prevU) {
         int spawnpoint = 0;
         
-        if (prevU.getNeighbor4() != null) {
+        if (prevU.getOutpost3() != null) {
             spawnpoint = 1;
         }
-        else if (prevU.getNeighbor5() != null) {
+        else if (prevU.getOutpost4() != null) {
             spawnpoint = 2;
         }
 
-        else if (prevU.getNeighbor6() != null) {
+        else if (prevU.getOutpost5() != null) {
             spawnpoint = 3;
         }
-        else if (prevU.getNeighbor1() != null) {
+        else if (prevU.getOutpost0() != null) {
             spawnpoint = 4;
         }
-        else if (prevU.getNeighbor2() != null) {
+        else if (prevU.getOutpost1() != null) {
             spawnpoint = 5;
         }
-        else if (prevU.getNeighbor3() != null) {
+        else if (prevU.getOutpost2() != null) {
             spawnpoint = 6;
         }
         prevU.setSpawnpoint(spawnpoint);
@@ -204,23 +204,23 @@ public class NewPlayerService {
     private int addFirstWildSpawnpoint(List<HexagonEntity> hexes, HexagonEntity firstU) {
         int spawnpoint = 0;
         
-        if (firstU.getNeighbor6() != null) {
+        if (firstU.getOutpost5() != null) {
             spawnpoint = 1;
         }
-        else if (firstU.getNeighbor1() != null) {
+        else if (firstU.getOutpost0() != null) {
             spawnpoint = 2;
         }
 
-        else if (firstU.getNeighbor2() != null) {
+        else if (firstU.getOutpost1() != null) {
             spawnpoint = 3;
         }
-        else if (firstU.getNeighbor3() != null) {
+        else if (firstU.getOutpost2() != null) {
             spawnpoint = 4;
         }
-        else if (firstU.getNeighbor4() != null) {
+        else if (firstU.getOutpost3() != null) {
             spawnpoint = 5;
         }
-        else if (firstU.getNeighbor5() != null) {
+        else if (firstU.getOutpost4() != null) {
             spawnpoint = 6;
         }
         firstU.setSpawnpoint(spawnpoint);

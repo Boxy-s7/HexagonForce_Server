@@ -2,7 +2,7 @@ package de.jamilo.hexagon.server.application.world;
 
 import de.jamilo.hexagon.server.domain.world.ClusterRelation;
 import de.jamilo.hexagon.server.domain.world.ClusterRelations;
-import de.jamilo.hexagon.server.domain.world.ClusterRole;
+import de.jamilo.hexagon.server.domain.world.HexagonRole;
 import de.jamilo.hexagon.server.domain.world.ClusterState;
 import de.jamilo.hexagon.server.persistence.entity.ClusterEntity;
 import de.jamilo.hexagon.server.persistence.entity.HexagonEntity;
@@ -46,7 +46,7 @@ public class ClusterCreator {
     }
 
     private void linkHexagon(HexagonEntity hex) {
-        ClusterRelation[] relations  = ClusterRelations.relations.get(hex.getClusterRole());
+        ClusterRelation[] relations  = ClusterRelations.relations.get(hex.getRole());
         for (int i = 0; i < 6; i++) {
             var relation = relations[i];
             if (relation.getTargetCluster() > -1) {
@@ -70,20 +70,20 @@ public class ClusterCreator {
     }
 
     private void linkHexes(int sIndex, HexagonEntity sHex, int tIndex, HexagonEntity tHex) {
-        sHex.setNeighbor(sIndex, tHex.getId());
-        tHex.setNeighbor(tIndex, sHex.getId());
+        sHex.setOutpost(sIndex, tHex.getHexId());
+        tHex.setOutpost(tIndex, sHex.getHexId());
     }
 
     private void generateHexagons() {
-        for (ClusterRole role : ClusterRole.values()) { 
+        for (HexagonRole role : HexagonRole.values()) { 
           generateHexagon(role);  
         }
     }
 
-    private void generateHexagon(ClusterRole role){
+    private void generateHexagon(HexagonRole role){
         HexagonEntity hex = new HexagonEntity(role.initialState);
-        hex.setClusterRole(role);
-        hex.setClusterId(cluster.getId());
+        hex.setRole(role);
+        hex.setClusterId(cluster.getClusterId());
         hex.setSpawnpoint(role.spawnPoint);
         hexaService.createHexagon(hex);
         clusterWrapper.setHexagon(hex);

@@ -3,6 +3,7 @@ package de.jamilo.hexagon.server.domain.message;
 public abstract class HubMessage<TPayload> {
 
     public String id;
+    public int count;
     public String module;
     public TPayload payload;
     

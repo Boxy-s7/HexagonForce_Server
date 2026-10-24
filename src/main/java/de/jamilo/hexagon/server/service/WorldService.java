@@ -1,8 +1,14 @@
 package de.jamilo.hexagon.server.service;
 
+import java.util.UUID;
+
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import de.jamilo.hexagon.server.domain.command.WorldHexClickCommand;
+import de.jamilo.hexagon.server.domain.event.HubEvent;
+import de.jamilo.hexagon.server.domain.event.WorldHexClickEvent;
+import de.jamilo.hexagon.server.domain.payload.WorldHexClickPayload;
 import de.jamilo.hexagon.server.domain.websocket.Command;
 import de.jamilo.hexagon.server.domain.websocket.Message;
 import jakarta.inject.Inject;
@@ -14,35 +20,33 @@ public class WorldService {
     @Inject 
     CommandService commandService;
 
-    public void onMessage(Message message, Long userID) {
-        switch (message.command()) {
+    public void onEvent(HubEvent<?> event, UUID userID) {
+        switch (event.event) {
             case "hexClick":
-                onHexClick(message, userID);
+                onHexClick((WorldHexClickEvent) event, userID);
                 break;
             default:
-                throw new IllegalArgumentException("Unknown command: " + message.command());
+                throw new IllegalArgumentException("Unknown command: " + event.event);
         }
         
     }
 
-    private void onHexClick(Message message, Long userID) {
-        int x = message.payload().get("x").asInt();
-        int y = message.payload().get("y").asInt();
+    private void onHexClick(WorldHexClickEvent event, UUID userID) {
+        int x = event.payload.x;
+        int y = event.payload.y;
 
         boolean isValid = validateHexClick(x, y, userID);
         if (isValid) 
         {
-            ObjectNode payload = JsonNodeFactory.instance.objectNode()
-        .put("x", x)
-        .put("y", y)
-        .put("isValid", true);
+            event.payload.isValid = true;
 
-            Command command = new Command(message.messageid(), "world" , "hexClick" , payload);
+            WorldHexClickCommand command = new WorldHexClickCommand();
+            command.payload = event.payload;
             commandService.sendCommand(command, userID);
         }
     }
 
-    private boolean validateHexClick(int x, int y, Long userID) {
+    private boolean validateHexClick(int x, int y, UUID userID) {
         return true;
     }
 

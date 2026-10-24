@@ -1,177 +1,91 @@
-
 package de.jamilo.hexagon.server.persistence.entity;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-import de.jamilo.hexagon.server.domain.world.ClusterRole;
+import de.jamilo.hexagon.server.domain.world.HexagonRole;
 import de.jamilo.hexagon.server.domain.world.HexagonState;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "world_hexagon")
 public class HexagonEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
-
-
-    @Column(name = "n_1", nullable = true)
-    private UUID neighbor1;
-
-    @Column(name = "n_2", nullable = true)
-    private UUID neighbor2;
-
-    @Column(name = "n_3", nullable = true)
-    private UUID neighbor3;
-
-    @Column(name = "n_4", nullable = true)
-    private UUID neighbor4;
-
-    @Column(name = "n_5", nullable = true)
-    private UUID neighbor5;
-
-    @Column(name = "n_6", nullable = true)
-    private UUID neighbor6;
-
-
-    @Column(name = "owner_id")
-    private UUID ownerId;
+    @Column(name = "mega_cluster_id")
+    private UUID megaClusterId;
 
     @Column(name = "cluster_id")
     private UUID clusterId;
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "hex_id")
+    private UUID hexId;
+
+    @Column(name = "owner_id")
+    private UUID ownerId;
+
     @Column(name = "cluster_role")
     @Enumerated(EnumType.STRING)
-    private ClusterRole clusterRole;
+    private HexagonRole role;
 
-
-    public ClusterRole getClusterRole() {
-        return clusterRole;
-    }
-    public void setClusterRole(ClusterRole clusterRole) {
-        this.clusterRole = clusterRole;
-    }
-    public UUID getClusterId() {
-        return clusterId;
-    }
-    public void setClusterId(UUID clusterId) {
-        this.clusterId = clusterId;
-    }
-    @Column (name = "state", nullable = false)
-    @Enumerated(EnumType.STRING)    
+    @Column(name = "state", nullable = false)
+    @Enumerated(EnumType.STRING)
     private HexagonState state;
 
-    @Transient
-    private final List<UUID> neighbors;
+    @Column(name = "o_0") private UUID outpost0;
+    @Column(name = "o_1") private UUID outpost1;
+    @Column(name = "o_2") private UUID outpost2;
+    @Column(name = "o_3") private UUID outpost3;
+    @Column(name = "o_4") private UUID outpost4;
+    @Column(name = "o_5") private UUID outpost5;
 
-    @Transient 
+    @Transient
+    private final List<UUID> outposts;
+
+    @Transient
     private int spawnpoint;
 
-
-
-
-
-
-
-
-
-    public int getSpawnpoint() {
-        return spawnpoint;
-    }
-    public void setSpawnpoint(int spawnpoint) {
-        this.spawnpoint = spawnpoint;
-    }
     public HexagonEntity() {
-        neighbors = new ArrayList<>(6 );
+        outposts = new ArrayList<>(Collections.nCopies(6, null));
     }
-    public HexagonEntity(HexagonState state) {
-        this();
-        this.state = state;
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public UUID getNeighbor1() {
-        return neighbor1;
-    }
-
-    public UUID getNeighbor2() {
-        return neighbor2;
-    }
-
-    public UUID getNeighbor3() {
-        return neighbor3;
-    }
-
-    public UUID getNeighbor4() {
-        return neighbor4;
-    }
-
-    public UUID getNeighbor5() {
-        return neighbor5;
-    }
-
-    public UUID getNeighbor6() {
-        return neighbor6;
-    }
-
-    public List<UUID> getNeighbors() {
-        return neighbors;
-    }
-
-    public void setNeighbor1(UUID n) {
-        neighbor1 = n;
-        neighbors.set(0, n);
-    }
-
-    public void setNeighbor2(UUID n) {
-        neighbor2 = n;
-        neighbors.set(1, n);
-    }
-
-    public void setNeighbor3(UUID n) {
-        neighbor3 = n;
-        neighbors.set(2, n);
-    }
-
-    public void setNeighbor4(UUID n) {
-        neighbor4 = n;
-        neighbors.set(3, n);
-    }
-
-    public void setNeighbor5(UUID n) {
-        neighbor5 = n;
-        neighbors.set(4, n);
-    }
-
-    public void setNeighbor6(UUID n) {
-        neighbor6 = n;
-        neighbors.set(5, n);
-    }
-
-    public UUID getOwnerId() {
-        return ownerId;
-    }
-
-    public HexagonState getState() {
-        return state;
-    }
-
-    public void setState(HexagonState owned) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setState'");
-    }
-    public void setNeighbor(int index, UUID id) {
-        if (index == 0) setNeighbor1(id);
-        if (index == 1) setNeighbor2(id);
-        if (index == 2) setNeighbor3(id);
-        if (index == 3) setNeighbor4(id);
-        if (index == 4) setNeighbor5(id);
-        if (index == 5) setNeighbor6(id);
+    public HexagonEntity(HexagonState state) { this(); this.state = state; }
+    public UUID getHexId() { return hexId; }
+    public UUID getMegaClusterId() { return megaClusterId; }
+    public void setMegaClusterId(UUID id) { megaClusterId = id; }
+    public UUID getClusterId() { return clusterId; }
+    public void setClusterId(UUID id) { clusterId = id; }
+    public UUID getOwnerId() { return ownerId; }
+    public void setOwnerId(UUID id) { ownerId = id; }
+    public HexagonRole getRole() { return role; }
+    public void setRole(HexagonRole role) { this.role = role; }
+    public HexagonState getState() { return state; }
+    public void setState(HexagonState state) { this.state = state; }
+    public int getSpawnpoint() { return spawnpoint; }
+    public void setSpawnpoint(int spawnpoint) { this.spawnpoint = spawnpoint; }
+    public UUID getOutpost0() { return outpost0; }
+    public void setOutpost0(UUID id) { outpost0 = id; outposts.set(0, id); }
+    public UUID getOutpost1() { return outpost1; }
+    public void setOutpost1(UUID id) { outpost1 = id; outposts.set(1, id); }
+    public UUID getOutpost2() { return outpost2; }
+    public void setOutpost2(UUID id) { outpost2 = id; outposts.set(2, id); }
+    public UUID getOutpost3() { return outpost3; }
+    public void setOutpost3(UUID id) { outpost3 = id; outposts.set(3, id); }
+    public UUID getOutpost4() { return outpost4; }
+    public void setOutpost4(UUID id) { outpost4 = id; outposts.set(4, id); }
+    public UUID getOutpost5() { return outpost5; }
+    public void setOutpost5(UUID id) { outpost5 = id; outposts.set(5, id); }
+    public List<UUID> getOutposts() { return outposts; }
+    public void setOutpost(int index, UUID id) {
+        switch (index) {
+            case 0 -> setOutpost0(id);
+            case 1 -> setOutpost1(id);
+            case 2 -> setOutpost2(id);
+            case 3 -> setOutpost3(id);
+            case 4 -> setOutpost4(id);
+            case 5 -> setOutpost5(id);
+            default -> throw new IndexOutOfBoundsException("Outpost index must be between 0 and 5: " + index);
+        }
     }
 }

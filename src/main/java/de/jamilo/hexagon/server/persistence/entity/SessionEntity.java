@@ -23,6 +23,18 @@ public class SessionEntity {
     @Column(name = "logout_at")
     private OffsetDateTime logoutAt;
 
+    @Column(name = "last_command")
+    private int lastCommand;
+
+    @Column(name = "last_message")
+    private int lastMessage;
+    
+    @Column(name = "open_connections")
+    private int connections;
+
+    
+
+
     protected SessionEntity() {
         // Für JPA
     }
@@ -48,17 +60,58 @@ public class SessionEntity {
         return logoutAt;
     }
 
-    public void logout(OffsetDateTime logoutAt) {
+    public void setLogoutAt(OffsetDateTime logoutAt) {
         this.logoutAt = logoutAt;
     }
 
-    public void setLoginAt(OffsetDateTime now) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setLoginAt'");
+    public void setLoginAt(OffsetDateTime loginAt) {
+        this.loginAt = loginAt;
     }
 
-    public void setUser(UserEntity user2) {
+    public void setUser(UserEntity user) {
+        this.user = user;
+    }
+
+    public int getConnections() {
+        return connections;
+    }
+
+    public void setConnections(int openConnections) {
+        this.connections = openConnections;
+    }
+
+    public int getLastCommand() {
+        return lastCommand;
+    }
+
+    public void setLastCommand(int lastCommand) {
+        this.lastCommand = lastCommand;
+    }
+
+    public int getLastMessage() {
+        return lastMessage;
+    }
+
+    public void setLastMessage(int lastMessage) {
+        this.lastMessage = lastMessage;
+    }
+
+    public UUID getDeviceToken() {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setUser'");
+        throw new UnsupportedOperationException("Unimplemented method 'getDeviceToken'");
+    }
+
+    public UUID getSessionToken() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getSessionToken'");
+    }
+
+    public void addConnection() {
+        this.connections++;
+    }
+
+    public void removeConnection() {
+        this.connections--;
     }
 }
+

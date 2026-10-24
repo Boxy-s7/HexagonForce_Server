@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.UUID;
 
 import de.jamilo.hexagon.server.domain.world.ClusterRelation;
-import de.jamilo.hexagon.server.domain.world.ClusterRole;
+import de.jamilo.hexagon.server.domain.world.HexagonRole;
 import de.jamilo.hexagon.server.persistence.entity.ClusterEntity;
 import de.jamilo.hexagon.server.persistence.entity.HexagonEntity;
 import de.jamilo.hexagon.server.persistence.service.ClusterService;
@@ -38,7 +38,7 @@ public class ClusterWrapper {
     }
 
     public void setNeighborCluster(ClusterWrapper tCluster, HexagonEntity seat) {
-        int n = seat.getClusterRole().index / 2;
+        int n = seat.getRole().index / 2;
         this.setNeighbor(n, tCluster.id());
         tCluster.setNeighbor(((n + 3) % 6), id());
         clusterService.updateCluster(this.cluster);
@@ -58,71 +58,71 @@ public class ClusterWrapper {
     }
 
     public void setHexagon(HexagonEntity hex) {
-        switch (hex.getClusterRole()) {
+        switch (hex.getRole()) {
             case o_0:
-                cluster.setOwner0(hex.getId());
+                cluster.setOwner0(hex.getHexId());
             case u_0:
-                cluster.setUnknown0(hex.getId());
+                cluster.setUnknown0(hex.getHexId());
                 break;
             case u_1:
-                cluster.setUnknown1(hex.getId());
+                cluster.setUnknown1(hex.getHexId());
                 break;
             case u_2:
-                cluster.setUnknown2(hex.getId());
+                cluster.setUnknown2(hex.getHexId());
                 break;
             case u_3:
-                cluster.setUnknown3(hex.getId());
+                cluster.setUnknown3(hex.getHexId());
                 break;
             case u_4:
-                cluster.setUnknown4(hex.getId());
+                cluster.setUnknown4(hex.getHexId());
                 break;
             case u_5:
-                cluster.setUnknown5(hex.getId());
+                cluster.setUnknown5(hex.getHexId());
                 break;
             case u_6:
-                cluster.setUnknown6(hex.getId());
+                cluster.setUnknown6(hex.getHexId());
                 break;
             case u_7:
-                cluster.setUnknown7(hex.getId());
+                cluster.setUnknown7(hex.getHexId());
                 break;
             case u_8:
-                cluster.setUnknown8(hex.getId());
+                cluster.setUnknown8(hex.getHexId());
                 break;
             case u_9:
-                cluster.setUnknown9(hex.getId());
+                cluster.setUnknown9(hex.getHexId());
                 break;
             case u_10:
-                cluster.setUnknown10(hex.getId());
+                cluster.setUnknown10(hex.getHexId());
                 break;
             case u_11:
-                cluster.setUnknown11(hex.getId());
+                cluster.setUnknown11(hex.getHexId());
                 break;
             case w_0:
-                cluster.setWild0(hex.getId());
+                cluster.setWild0(hex.getHexId());
                 break;
             case w_1:
-                cluster.setWild1(hex.getId());
+                cluster.setWild1(hex.getHexId());
                 break;
             case w_2:
-                cluster.setWild2(hex.getId());
+                cluster.setWild2(hex.getHexId());
                 break;
             case w_3:
-                cluster.setWild3(hex.getId());
+                cluster.setWild3(hex.getHexId());
                 break;
             case w_4:
-                cluster.setWild4(hex.getId());
+                cluster.setWild4(hex.getHexId());
                 break;
             case w_5:
-                cluster.setWild5(hex.getId());
+                cluster.setWild5(hex.getHexId());
                 break;
             default:
                 break;
         }
 
-        hexas.set(hex.getClusterRole().index, hex);
+        hexas.set(hex.getRole().index, hex);
         clusterService.updateCluster(cluster);
     }
-public UUID getHexagon(ClusterRole role) {
+public UUID getHexagon(HexagonRole role) {
     switch (role) {
         case o_0:
             return cluster.getOwner0();
@@ -171,7 +171,7 @@ public UUID getHexagon(ClusterRole role) {
     }
 
     public UUID id() {
-        return this.cluster.getId();
+        return this.cluster.getClusterId();
     }
 
     public ClusterWrapper getNeigborCluster(ClusterRelation relation) {

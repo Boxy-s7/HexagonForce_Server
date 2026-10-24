@@ -7,7 +7,10 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import de.jamilo.hexagon.server.application.user.UserSessionService;
+import de.jamilo.hexagon.server.domain.event.HubEvent;
+import de.jamilo.hexagon.server.domain.event.HubEventList;
 import de.jamilo.hexagon.server.domain.session.SessionRecord;
+import de.jamilo.hexagon.server.domain.session.UserSession;
 import de.jamilo.hexagon.server.domain.websocket.Command;
 import de.jamilo.hexagon.server.domain.websocket.Message;
 import de.jamilo.hexagon.server.service.MessageService;
@@ -21,9 +24,11 @@ import io.smallrye.mutiny.Uni;
 import jakarta.inject.Inject;
 
 /** User WebSocket endpoint. Connect using /ws/{userId}. */
-@WebSocket(path = "/ws/{userId}")
+@WebSocket(path = "/ws/{sessionToken}")
 public class WebSocketEndpoint {
 
+    private static final TypedKey<String> CONNECTION_STATE = TypedKey.forString("state");
+    private static final String CONNECTION_STATE_INIT = "INIT";
 
     @Inject
     UserSessionService userSessionService;
@@ -48,67 +53,18 @@ public class WebSocketEndpoint {
     }
 
     @OnTextMessage
-    void onMessage(Message message, WebSocketConnection connection) {
-        SessionRecord session = userSessionService.getSession(UUID.fromString(connection.userData().get(SESSION_ID)));
-        if (session != null) {
-            messageService.onMessage(message, session.userId());
-        }
-    }
-
-    public static Uni<Void> sendToUser(long userId, Command message) {
-        return sendToConnections(
-                CONNECTIONS.get(String.valueOf(userId)),
-                message);
-    }
-
-    public static Uni<Void> sendToUsers(Collection<Long> userIds, Command message) {
-        List<WebSocketConnection> connections = userIds.stream()
-                .filter(Objects::nonNull)
-                .distinct()
-                .map(userId -> CONNECTIONS.get(String.valueOf(userId)))
-                .filter(Objects::nonNull)
-                .flatMap(Set::stream)
-                .toList();
-
-        return sendToConnections(connections, message);
-    }
-
-    public static Uni<Void> sendToAll(Command message) {
-        List<WebSocketConnection> connections = CONNECTIONS.values().stream()
-                .flatMap(Set::stream)
-                .toList();
-
-        return sendToConnections(connections, message);
-    }
-
-    private static Uni<Void> sendToConnections(
-            Collection<WebSocketConnection> connections,
-            Command message) {
-
-        if (connections == null || connections.isEmpty()) {
-            return Uni.createFrom().voidItem();
-        }
-
-        List<Uni<Void>> sends = connections.stream()
-                .map(connection -> connection.sendText(message))
-                .toList();
-
-        return Uni.combine().all().unis(sends).discardItems();
-    }
-
-    private String findCookie(List<String> headers, String name) {
-        if (headers == null) {
-            return null;
-        }
-
-        for (String header : headers) {
-            for (String part : header.split(";")) {
-                String[] pair = part.trim().split("=", 2);
-                if (pair.length == 2 && pair[0].equals(name)) {
-                    return pair[1];
-                }
+    void onMessage(HubEvent<?> message, WebSocketConnection connection) {
+        String state = connection.userData().get(CONNECTION_STATE);
+        if (state.equals(CONNECTION_STATE_INIT)) {
+            if (message.module.equals(HubEventList.INIT)) {
+                userSessionService.login(connection)
+            } else {
+                System.out.println("TODO LOGOUT");
             }
+        } else  
+        UserSession session = userSessionService.getUserSession(connection);
+        if (session != null) {
+            messageService.onEvent(message, session);
         }
-        return null;
     }
 }

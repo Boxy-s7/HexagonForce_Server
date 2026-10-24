@@ -1,13 +1,19 @@
 package de.jamilo.hexagon.server.service;
 
-import de.jamilo.hexagon.server.domain.websocket.Command;
-import de.jamilo.hexagon.server.websocket.WebSocketEndpoint;
+import java.util.UUID;
+
+import de.jamilo.hexagon.server.domain.command.HubCommand;
+import de.jamilo.hexagon.server.persistence.service.SessionService;
+import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
 @Singleton 
 public class CommandService {
 
-    public void sendCommand(Command command, long userId) {
-        WebSocketEndpoint.sendToUser(userId, command);
+    @Inject 
+    SessionService sessionService;
+
+    public void sendCommand(HubCommand<?> command, UUID userId) {
+        sessionService.sendToUser(userId, command);
     }
 }

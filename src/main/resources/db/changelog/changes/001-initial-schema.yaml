@@ -1,0 +1,290 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001-initial-schema
+      author: hexagonforce
+      changes:
+        - createTable:
+            tableName: app_user
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_app_user
+                    nullable: false
+              - column:
+                  name: username
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+                    unique: true
+                    uniqueConstraintName: uk_app_user_username
+
+        - createTable:
+            tableName: user_session
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_user_session
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: login_at
+                  type: TIMESTAMP WITH TIME ZONE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: logout_at
+                  type: TIMESTAMP WITH TIME ZONE
+              - column:
+                  name: last_command
+                  type: INTEGER
+              - column:
+                  name: last_message
+                  type: INTEGER
+              - column:
+                  name: open_connections
+                  type: INTEGER
+
+        - addForeignKeyConstraint:
+            baseTableName: user_session
+            baseColumnNames: user_id
+            constraintName: fk_user_session_user
+            referencedTableName: app_user
+            referencedColumnNames: id
+
+        - createIndex:
+            tableName: user_session
+            indexName: idx_user_session_user_id
+            columns:
+              - column:
+                  name: user_id
+
+        - createTable:
+            tableName: user_devices
+            columns:
+              - column:
+                  name: device_token
+                  type: VARCHAR(2048)
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_user_devices
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            baseTableName: user_devices
+            baseColumnNames: user_id
+            constraintName: fk_user_devices_user
+            referencedTableName: app_user
+            referencedColumnNames: id
+
+        - createIndex:
+            tableName: user_devices
+            indexName: idx_user_devices_user_id
+            columns:
+              - column:
+                  name: user_id
+
+        - createTable:
+            tableName: world_mega_cluster
+            columns:
+              - column:
+                  name: mega_cluster_id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_world_mega_cluster
+                    nullable: false
+              - column:
+                  name: mega_cluster_state
+                  type: VARCHAR(255)
+              - column:
+                  name: c_0
+                  type: UUID
+              - column:
+                  name: p_0
+                  type: UUID
+              - column:
+                  name: p_1
+                  type: UUID
+              - column:
+                  name: p_2
+                  type: UUID
+              - column:
+                  name: p_3
+                  type: UUID
+              - column:
+                  name: p_4
+                  type: UUID
+              - column:
+                  name: p_5
+                  type: UUID
+
+        - createTable:
+            tableName: world_cluster
+            columns:
+              - column:
+                  name: cluster_id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_world_cluster
+                    nullable: false
+              - column:
+                  name: mega_cluster_id
+                  type: UUID
+              - column:
+                  name: cluster_role
+                  type: VARCHAR(255)
+              - column:
+                  name: o_0
+                  type: UUID
+              - column:
+                  name: w_0
+                  type: UUID
+              - column:
+                  name: w_1
+                  type: UUID
+              - column:
+                  name: w_2
+                  type: UUID
+              - column:
+                  name: w_3
+                  type: UUID
+              - column:
+                  name: w_4
+                  type: UUID
+              - column:
+                  name: w_5
+                  type: UUID
+              - column:
+                  name: u_0
+                  type: UUID
+              - column:
+                  name: u_1
+                  type: UUID
+              - column:
+                  name: u_2
+                  type: UUID
+              - column:
+                  name: u_3
+                  type: UUID
+              - column:
+                  name: u_4
+                  type: UUID
+              - column:
+                  name: u_5
+                  type: UUID
+              - column:
+                  name: u_6
+                  type: UUID
+              - column:
+                  name: u_7
+                  type: UUID
+              - column:
+                  name: u_8
+                  type: UUID
+              - column:
+                  name: u_9
+                  type: UUID
+              - column:
+                  name: u_10
+                  type: UUID
+              - column:
+                  name: u_11
+                  type: UUID
+              - column:
+                  name: state
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+        - createTable:
+            tableName: world_hexagon
+            columns:
+              - column:
+                  name: hex_id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_world_hexagon
+                    nullable: false
+              - column:
+                  name: mega_cluster_id
+                  type: UUID
+              - column:
+                  name: cluster_id
+                  type: UUID
+              - column:
+                  name: owner_id
+                  type: UUID
+              - column:
+                  name: cluster_role
+                  type: VARCHAR(255)
+              - column:
+                  name: o_0
+                  type: UUID
+              - column:
+                  name: o_1
+                  type: UUID
+              - column:
+                  name: o_2
+                  type: UUID
+              - column:
+                  name: o_3
+                  type: UUID
+              - column:
+                  name: o_4
+                  type: UUID
+              - column:
+                  name: o_5
+                  type: UUID
+              - column:
+                  name: state
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+        - createTable:
+            tableName: world_outpost
+            columns:
+              - column:
+                  name: outpost_id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_world_outpost
+                    nullable: false
+              - column:
+                  name: mega_cluster_id
+                  type: UUID
+              - column:
+                  name: cluster_id
+                  type: UUID
+              - column:
+                  name: hex_id
+                  type: UUID
+              - column:
+                  name: owner_id
+                  type: UUID
+              - column:
+                  name: edge_id
+                  type: INTEGER
+              - column:
+                  name: outpost_state
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false

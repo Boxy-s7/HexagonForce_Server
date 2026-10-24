@@ -2,6 +2,7 @@ package de.jamilo.hexagon.server.websocket;
 
 import de.jamilo.hexagon.server.application.user.UserSessionService;
 import de.jamilo.hexagon.server.domain.websocket.Message;
+import de.jamilo.hexagon.server.persistence.service.SessionService;
 import io.quarkus.websockets.next.OnClose;
 import io.quarkus.websockets.next.OnOpen;
 import io.quarkus.websockets.next.WebSocket;
@@ -16,7 +17,7 @@ public class SessionUpdatesWebSocket {
     SessionUpdateBroadcaster broadcaster;
 
     @Inject
-    UserSessionService sessions;
+    SessionService sessions;
 
     @OnOpen
     Message onOpen(WebSocketConnection connection) {
